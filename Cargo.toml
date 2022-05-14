@@ -1,0 +1,12 @@
+[package]
+name = "rustinecore"
+version = "0.1.0"
+authors = ["Pepiloto pepiloto@protonmail.com"]
+description = "Core and Orchestrator of the RustineCI project"
+license = "GNU General Public License v3.0"
+repository = "https://github.com/RustineCI/rustinecore"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
