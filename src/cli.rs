@@ -6,12 +6,12 @@
 
 use crate::nodes;
 
-/// This function is called multiple times to create this aspect of a cli
+/// Prints a prompt, take user input and give the result to the match_command function
 pub fn cli(node_list: &mut Vec<nodes::Node>) {
     let mut command: String = String::new();
 
     print!("> ");
-    let _ = std::io::Write::flush(&mut std::io::stdout());
+    std::io::Write::flush(&mut std::io::stdout()).expect("Enable to flush stdout");
     std::io::stdin()
         .read_line(&mut command)
         .expect("Did not enter a correct string");
@@ -35,7 +35,7 @@ fn match_command(command: String, node_list: &mut Vec<nodes::Node>) {
     match command.next() {
         Some("exit") => exit(),
         Some("node") => node(command, node_list),
-        _ => println!("Something else than a right command"),
+        _ => println!("Wrong command !"),
     }
 }
 
