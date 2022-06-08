@@ -112,7 +112,7 @@ pub fn create_node(mut command: std::str::SplitWhitespace, node_list: &mut Vec<N
 /// node_list (Vec<Node>): The list of the Nodes
 pub fn list_nodes(node_list: &Vec<Node>) {
     if node_list.is_empty() {
-        println!("No node found, create nodes before listing them.");
+        println!("No node found, create some to display their informations when listing.");
         return;
     }
     println!("Node list:");
