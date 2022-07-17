@@ -24,10 +24,13 @@ pub fn cli(node_list: &mut Vec<nodes::Node>) {
 /// If the function is not known it prints "Command not found"
 ///
 /// # Arguments
-/// Takes a String as parameter, it will be used to match with the available commands.
+/// command (String): The command given by the user
+///
+/// node_list (Vec<Node>): The list of the Nodes
 ///
 /// # Available commands
 /// exit: to exit the program
+///
 /// node: to access the node possibilities
 fn match_command(command: String, node_list: &mut Vec<nodes::Node>) {
     let mut command: std::str::SplitWhitespace = command.split_whitespace();
@@ -52,7 +55,9 @@ fn exit() {
 /// If the command is unknown it prints "Not a node command" and return
 ///
 /// # Arguments
-/// Takes a std::str::SplitWhitespace as parameter, it will be used to match with the differents node commands
+/// command (std::str::SplitWhitespace): The command given by the user
+///
+/// node_list (Vec<Node>): The list of the Nodes
 fn node(mut command: std::str::SplitWhitespace, node_list: &mut Vec<nodes::Node>) {
     match command.next() {
         Some("create") => nodes::create_node(command, node_list),

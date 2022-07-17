@@ -13,6 +13,7 @@ pub enum Status {
 ///
 /// # Attributes
 /// name (String): The name of the Node
+///
 /// status (Status): The status of the Node
 pub struct Node {
     name: String,
@@ -78,6 +79,7 @@ impl Node {
 ///
 /// # Arguments
 /// command (std::str::SplitWhitespace): The command given by the user
+///
 /// node_list (Vec<Node>): The list of the current Nodes
 pub fn create_node(mut command: std::str::SplitWhitespace, node_list: &mut Vec<Node>) {
     if let Some(node_name) = command.next() {
@@ -129,17 +131,19 @@ pub fn list_nodes(node_list: &Vec<Node>) {
 ///
 /// # Arguments
 /// command (sd::str::SplitWhitespace): The command given by the user
+///
 /// node_list (Vec<Node>): The list of the Nodes
 pub fn delete_node(mut command: std::str::SplitWhitespace, node_list: &mut Vec<Node>) {
     if let Some(node_name) = command.next() {
         let mut i: usize = 0;
         while i != node_list.len() {
             if node_list[i].get_name() == node_name {
+                node_list.swap_remove(i);
+                println!("Node {} deleted", node_name);
                 break;
             }
             i += 1;
         }
-        node_list.swap_remove(i);
     } else {
         println!("No node given for deletion");
     }
@@ -149,6 +153,7 @@ pub fn delete_node(mut command: std::str::SplitWhitespace, node_list: &mut Vec<N
 ///
 /// # Arguments
 /// command (std::str::SplitWhitespace): The command given by the user
+///
 /// node_list (Vec<Node>): The list of the Nodes
 pub fn rename_node(mut command: std::str::SplitWhitespace, node_list: &mut Vec<Node>) {
     if let Some(node_name) = command.next() {
@@ -162,5 +167,127 @@ pub fn rename_node(mut command: std::str::SplitWhitespace, node_list: &mut Vec<N
         }
     } else {
         println!("No node given to rename or no new name given");
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{create_node, delete_node, rename_node, Node};
+
+    #[test]
+    fn test_create_default_node() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "".split_whitespace();
+
+        create_node(command, &mut node_list);
+        assert!(!node_list.is_empty());
+        assert_eq!(node_list.len(), 1);
+        assert_eq!(node_list.first().unwrap().name, "default");
+    }
+
+    #[test]
+    fn test_create_specific_node() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+
+        create_node(command, &mut node_list);
+        assert!(!node_list.is_empty());
+        assert_eq!(node_list.len(), 1);
+        assert_eq!(node_list.first().unwrap().name, "toto");
+    }
+
+    #[test]
+    fn test_deleting_node() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+
+        create_node(command, &mut node_list);
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+        delete_node(command, &mut node_list);
+        assert!(node_list.is_empty());
+        assert_eq!(node_list.len(), 0);
+    }
+
+    #[test]
+    fn test_deleting_non_existing_node() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+
+        create_node(command, &mut node_list);
+        let command: std::str::SplitWhitespace = "titi".split_whitespace();
+        delete_node(command, &mut node_list);
+        assert!(!node_list.is_empty());
+        assert_eq!(node_list.len(), 1);
+    }
+
+    #[test]
+    fn test_deleting_node_in_empty_node_list() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+
+        delete_node(command, &mut node_list);
+        assert!(node_list.is_empty());
+        assert_eq!(node_list.len(), 0);
+    }
+
+    #[test]
+    fn test_node_renaming() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+
+        create_node(command, &mut node_list);
+        let command: std::str::SplitWhitespace = "toto titi".split_whitespace();
+        rename_node(command, &mut node_list);
+        assert!(!node_list.is_empty());
+        assert_eq!(node_list.len(), 1);
+        assert_eq!(node_list.first().unwrap().name, "titi");
+    }
+
+    #[test]
+    fn test_node_renaming_wrong_node_name_given() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+
+        create_node(command, &mut node_list);
+        let command: std::str::SplitWhitespace = "titi titi".split_whitespace();
+        rename_node(command, &mut node_list);
+        assert!(!node_list.is_empty());
+        assert_eq!(node_list.len(), 1);
+        assert_eq!(node_list.first().unwrap().name, "toto");
+    }
+
+    #[test]
+    fn test_node_renaming_no_new_name_given() {
+        let mut node_list: Vec<Node> = vec![];
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+
+        create_node(command, &mut node_list);
+        let command: std::str::SplitWhitespace = "toto".split_whitespace();
+        rename_node(command, &mut node_list);
+        assert!(!node_list.is_empty());
+        assert_eq!(node_list.len(), 1);
+        assert_eq!(node_list.first().unwrap().name, "toto");
+    }
+
+    #[test]
+    fn test_node_get_name() {
+        let default_node: Node = Node::default();
+
+        assert_eq!(default_node.get_name(), "default");
+    }
+
+    #[test]
+    fn test_node_get_status_string() {
+        let default_node: Node = Node::default();
+
+        assert_eq!(default_node.get_status_string(), "STAND BY");
+    }
+
+    #[test]
+    fn test_node_set_name() {
+        let mut default_node: Node = Node::default();
+
+        default_node.set_name(String::from("plouf"));
+        assert_eq!(default_node.get_name(), "plouf");
     }
 }
